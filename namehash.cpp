@@ -24,8 +24,18 @@ string increment_letters(string name){
 
     // for loop to increment each letter
     for(int i = 0; i < len; i++){       // loops len times
-        char a = name[i];               // set a to be the ith char in name
-        a++;                            // increment a (turns it to b)
+        bool is_not_letter;             // bool to store if character is a letter
+        char a = name[i];
+        is_not_letter = (a < 65 || (a > 90 && a < 97)); // these values are the non-letters in cpp ASCII
+
+        if(is_not_letter){              // if 'a' is not a letter
+            temp[i] = a;                // set temp at ith position to a (not changing anything)
+            continue;                   // continue to next loop
+        }
+        if(a == 90 || a == 122){        // if a is 90 (Z) or 122 (z)
+            a -= 26;                    // decrement by 26
+        }
+        a++;                            // increment by 1 
         temp[i] = a;                    // set ith char in temp to be a
     }
     temp[len] = '\0';                   // adding null character at end of answer    
