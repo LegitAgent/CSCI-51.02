@@ -2,7 +2,7 @@
 using namespace std;
 
 
-// function for hashing letters
+// #3: function for hashing letters
 string hash_letters(string name) {
     int len = name.length();            // variable 'len' carries the length of 'name'
     char temp[len + 1];                 // create char array 'temp' with len+1 spaces
@@ -43,15 +43,32 @@ string increment_letters(string name){
     return answer;                      // return answer
 }
 
+// #5: function for incrementing letters, pointer manipulation
+char hash_letter_pointer(char *p) {
+    char character = *p;                // dereference the pointer p into its character form
+    int ascii = int(character);         // turn the character to its ascii format
+    if(ascii == 122 || ascii == 90) {   // if the ascii is a 'z' or 'Z' 
+        ascii -= 25;                    // then - 25 to turn it into an 'a' or 'A'
+    } else {                            // if it is any other letter
+        ascii++;                        // increment by 1
+    }
+    return char(ascii);                 // return the ascii into its character form
+}
+
 int main(void) {
     string name;
     cin >> name;
+    cout << name << endl;
 
     string increment = increment_letters(name);
     string hashed = hash_letters(name);
+    for (int i = 0; i < name.length(); i++) {
+        char edited = hash_letter_pointer(&name[i]);
+        name[i] = edited;
+    }
     cout << hashed << endl;
     cout << increment << endl;
+    cout << name << endl;
 
     return 0;
 }
-
