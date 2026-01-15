@@ -49,7 +49,7 @@ char hash_letter_pointer(char *p) {
     int ascii = int(character);         // turn the character to its ascii format
     if(ascii == 122 || ascii == 90) {   // if the ascii is a 'z' or 'Z' 
         ascii -= 25;                    // then - 25 to turn it into an 'a' or 'A'
-    } else {                            // if it is any other letter
+    } else if((ascii >= 65 && ascii <= 90) || (ascii >= 97 && ascii <= 122)) {  // if it is any other letter
         ascii++;                        // increment by 1
     }
     return char(ascii);                 // return the ascii into its character form
