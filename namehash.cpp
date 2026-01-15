@@ -1,18 +1,19 @@
 #include <iostream>
 using namespace std;
 
+// function for hashing letters
 string hash_letters(string name) {
-    int len = name.length();
-    char temp[len + 1];
-    temp[0] = name[0];
-
-    for (int i = 1; i < len; i++) {
-        char a = '#';
-        temp[i] = a;
-    }
-    temp[len] = '\0';
+    int len = name.length();            // variable 'len' carries the length of 'name'
+    char temp[len + 1];                 // create char array 'temp' with len+1 spaces
+    temp[0] = name[0];                  // set first character of temp to be first char of name
     
-    return string(temp);
+    // for loop to increment each character, starting with 1 to preserve the first character
+    for (int i = 1; i < len; i++) {
+        temp[i] = '#';                  // set ith character in temp to be '#'
+    }
+    temp[len] = '\0';                   // adds a null character at the end of temp
+    
+    return string(temp);                // returns a string that was created from character array 'temp'
 }
 
 // function for incrementing letters
