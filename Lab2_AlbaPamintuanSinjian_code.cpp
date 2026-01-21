@@ -1,18 +1,33 @@
 #include <iostream>
-#include <stdlib.h>
+
 using namespace std;
 
-void CreateAgentCoordinateLine(int i, char* x, char* y){
-	string xCoordinate = string(x);
-	string yCoordinate = string(y);
-	
-	cout << "Agent #" << i << " is at (" << xCoordinate << ", " << yCoordinate << ")";
-	
-}
+int main(){
+	int agentCount;
+    cout << "Enter Amount of Agents: " << endl;
+    cin >> agentCount;
+    cin.ignore(); // To ignore the newline character after reading agentCount
 
+    for (int i = 1; i <= agentCount; i++) {
+        int posX; int posY; string line;
+        cin >> posX >> posY;
+        getline(cin, line);
+        cout << "Agent #" << i << " is at (" << posX << ", " << posY << ")" << endl;
 
-int main(int argc, char* argv[]){
-	CreateAgentCoordinateLine(1, argv[1], argv[2]);
+        bool isInt = true;
+        for(int j = 1; j < line.length(); j++) {
+            if(!isdigit(line[j])) {
+                isInt = false;
+                break;
+            }
+        }
+        if(isInt) {
+            cout << "Agent #" << i << " has the number " << line.substr(1) << endl;
+        } else {
+            cout << "Agent #" << i << " yells: \"" << line.substr(1) << "\"" << endl;
+        }
+    }
+
 	return 0;
 }
 
