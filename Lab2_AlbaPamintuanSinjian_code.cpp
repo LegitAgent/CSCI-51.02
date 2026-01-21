@@ -2,17 +2,17 @@
 #include <stdlib.h>
 using namespace std;
 
-string CreateAgentLine(char* x, char* y, char*){
+void CreateAgentCoordinateLine(int i, char* x, char* y){
+	string xCoordinate = string(x);
+	string yCoordinate = string(y);
+	
+	cout << "Agent #" << i << " is at (" << xCoordinate << ", " << yCoordinate << ")";
 	
 }
 
 
 int main(int argc, char* argv[]){
-	for(int i=0; i<argc; i++){
-		string s;
-		s = string(argv[i]);
-		cout << s << endl;
-	}
+	CreateAgentCoordinateLine(1, argv[1], argv[2]);
 	return 0;
 }
 
