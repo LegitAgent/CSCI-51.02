@@ -3,10 +3,10 @@
 using namespace std;
 
 int main(){
-	int agentCount;
-    cout << "Enter Amount of Agents: " << endl;
+	int agentCount;										// Int variable to store number of agents (first line in txt file)
+    cout << "Enter Amount of Agents: " << endl;			// 
     cin >> agentCount;
-    cin.ignore(); // To ignore the newline character after reading agentCount
+    cin.ignore(); 										// To ignore the newline character after reading agentCount
 
     for (int i = 1; i <= agentCount; i++) {
         int posX; int posY; string line;
