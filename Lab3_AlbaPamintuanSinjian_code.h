@@ -1,4 +1,11 @@
 #include <iostream>
 using namespace std;
 
-// add structs below
+struct IntNode{
+    // insert code below
+};
+
+
+struct IntList{
+    // insert code below
+};
