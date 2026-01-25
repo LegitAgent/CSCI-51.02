@@ -3,7 +3,16 @@
 using namespace std;
 
 int main(){
-    // insert code below
 
-    return 0
+    // creating IntNode object i, setting values
+    IntNode *i = new IntNode();
+    i->x = 0;
+
+    cout << i->x << endl;
+
+    // deallocate memory
+    delete i;
+    i = NULL;
+
+    return 0;
 }

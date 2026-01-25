@@ -2,7 +2,7 @@
 using namespace std;
 
 struct IntNode{
-    // insert code below
+    int x;
 };
 
 
