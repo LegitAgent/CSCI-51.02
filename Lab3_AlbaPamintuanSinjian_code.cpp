@@ -6,9 +6,9 @@ int main(){
 
     // creating IntNode object i, setting values
     IntNode *i = new IntNode();
-    i->x = 0;
+    i->nodeData = 0;
 
-    cout << i->x << endl;
+    cout << i->nodeData << endl;
 
     // deallocate memory
     delete i;
