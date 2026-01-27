@@ -5,17 +5,18 @@ using namespace std;
 int main(){
 
     // creating IntNode object i, setting values
-    IntNode *i = new IntNode;
-    i->nodeData = 0;
-    IntNode *j = new IntNode;
-    j->nodeData = 1;
+    IntNode *i = new IntNode(0, NULL);
+    IntNode *j = new IntNode(1, NULL);
     i->linkage = j;
 
-    cout << i->nodeData << endl;
-    cout << i->linkage->nodeData << endl;
+    cout << "The nodeData of i is " << i->nodeData << endl;
+    cout << "The nodeData of j is " << i->linkage->nodeData << endl;
 
     IntList list;
     IntNode *dude = list.initializeHead(5);
+    cout << "The head nodeData is " << dude->nodeData << endl;
+    cout << "The head nodeData is " << list.returnHead()->nodeData << endl;
+
     IntNode *head = list.returnHead();
     list.deleteNode(head);
 

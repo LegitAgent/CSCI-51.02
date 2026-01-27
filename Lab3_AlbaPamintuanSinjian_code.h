@@ -14,7 +14,7 @@ struct IntNode{
 
     // destructor
     ~IntNode(){
-        cout << "NOO BRO DIED" << cin;
+        cout << "NOO BRO DIED" << endl;
     }
 };
 
@@ -25,9 +25,7 @@ struct IntList{
 
     IntNode* initializeHead(int data) {
         if (this->head == NULL){
-            this->head = new IntNode;
-            this->head->nodeData = data;
-            this->head->linkage = nullptr;
+            this->head = new IntNode(data, NULL);
         }
         return this->head;
     }
