@@ -35,10 +35,31 @@ int main(){
     cout << tail->nodeData << endl;
     list.deleteNode(head);
     cout << head->nodeData << endl;
-    list.deleteNode(bark);
-    cout << bark->nodeData << endl;
 
-    // deallocate memory
+    cout << "" << endl;
+
+    IntList *thing = new IntList;
+    IntNode *x = thing->initializeHead(5);
+    IntNode *y = thing->insertNode(x, 300);
+    IntNode *z = thing->insertNode(y, 500);
+    IntNode *w = thing->insertNode(x, 30);
+
+    IntNode *first = thing->returnHead();
+
+    while(first != NULL){
+        cout << first->nodeData << endl;
+        first = first->linkage;
+    }
+
+    cout << "" << endl;
+    cout << thing->returnHead()->nodeData << endl;
+    thing->deleteNode(x);
+    cout << thing->returnHead()->nodeData << endl;
+
+    delete thing;
+    thing = NULL;
+
+    // Deallocate memory
     delete i;
     i = NULL;
     delete j;
