@@ -37,6 +37,7 @@ int main(){
     cout << head->nodeData << endl;
 
     cout << "" << endl;                         // line space to separate, for output readability
+    cout << "LIST DEMONSTRATION (with errors)" << endl;
 
     // Pointer implementation of IntList
     IntList *list2 = new IntList;
@@ -64,11 +65,12 @@ int main(){
         first = first->linkage;
     }
 
-    cout << "" << endl;
     cout << list2->returnHead()->nodeData << endl;
     list2->deleteNode(x);
     cout << list2->returnHead()->nodeData << endl;
 
+    cout << "" << endl;
+    cout << "STACK DEMONSTRATION (with errors)" << endl;
     Stack* stk = new Stack;
     stk->push(23);
     int size = stk->getSize();
@@ -88,12 +90,6 @@ int main(){
 
     delete foo;
     foo = NULL;
-
-    // Deallocate memory
-    // delete i;
-    // i = NULL;
-    // delete j;
-    // j = NULL;
 
     return 0;
 }
