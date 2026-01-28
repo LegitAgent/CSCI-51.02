@@ -38,26 +38,42 @@ int main(){
 
     cout << "" << endl;
 
-    IntList *thing = new IntList;
-    IntNode *x = thing->initializeHead(5);
-    IntNode *y = thing->insertNode(x, 300);
-    IntNode *z = thing->insertNode(y, 500);
-    IntNode *w = thing->insertNode(x, 30);
+    // Pointer implementation of IntList
+    IntList *list2 = new IntList;
+    IntNode *x = list2->initializeHead(5);
+    IntNode *y = list2->insertNode(x, 300);
+    IntNode *z = list2->insertNode(y, 500);
+    IntNode *w = list2->insertNode(x, 30);
 
-    IntNode *first = thing->returnHead();
+    IntNode *first = list2->returnHead();
 
+    // Console output all nodes
     while(first != NULL){
         cout << first->nodeData << endl;
         first = first->linkage;
     }
 
     cout << "" << endl;
-    cout << thing->returnHead()->nodeData << endl;
-    thing->deleteNode(x);
-    cout << thing->returnHead()->nodeData << endl;
+    cout << list2->returnHead()->nodeData << endl;
+    list2->deleteNode(x);
+    cout << list2->returnHead()->nodeData << endl;
 
-    delete thing;
-    thing = NULL;
+    Stack* stk = new Stack;
+    stk->push(23);
+    int size = stk->getSize();
+    int peek = stk->getPeek();
+    stk->pop();
+    stk->getPeek();
+    cout << size << endl;
+    cout << peek << endl;
+
+
+    // Deallocation memory: list and stack pointers
+    delete list2;
+    list2 = NULL;
+
+    delete stk;
+    stk = NULL;
 
     // Deallocate memory
     // delete i;

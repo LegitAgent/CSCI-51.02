@@ -149,23 +149,26 @@ struct Stack {
     }
 
     // Pop: 
-    void pop() {
+    int pop() {
 
         // Edge case: trying to pop an empty stack
         if(size == 0) {
             cout << "ERROR: attempting to pop an empty stack" << endl;    // Error Message: stack is empty
         }
 
-        IntNode* temp = peek;                   
-        peek = peek->linkage;
-        delete temp;
-        temp = NULL;
-        size--;
+        IntNode* temp = peek;                   // Set temp variable to top of stack     
+        int data = peek->nodeData;              // Data variable to hold data of top node
+        peek = peek->linkage;                   // Set peek to top of peek
+        delete temp;                            // Deallocate memory
+        temp = NULL;                            // Set temp to NULL
+        size--;                                 // decrement size
+
+        return data;                            // Return data (int)
     }
 
     // Method to return size (number of nodes in stack)
     int getSize() {
-        return size;                            // return size
+        return size;                            // Return size
     }
 
     // Peek: look at top of the stack
