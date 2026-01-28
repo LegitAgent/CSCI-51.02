@@ -5,12 +5,12 @@ using namespace std;
 int main(){
 
     // creating IntNode object i, setting values
-    IntNode *i = new IntNode(0, NULL);
-    IntNode *j = new IntNode(1, NULL);
-    i->linkage = j;
+    // IntNode *i = new IntNode(0, NULL);
+    // IntNode *j = new IntNode(1, NULL);
+    // i->linkage = j;
 
-    cout << "The nodeData of i is " << i->nodeData << endl;
-    cout << "The nodeData of j is " << i->linkage->nodeData << endl;
+    // cout << "The nodeData of i is " << i->nodeData << endl;
+    // cout << "The nodeData of j is " << i->linkage->nodeData << endl;
 
     IntList list;
     IntNode *dude = list.initializeHead(5);
@@ -60,10 +60,10 @@ int main(){
     thing = NULL;
 
     // Deallocate memory
-    delete i;
-    i = NULL;
-    delete j;
-    j = NULL;
+    // delete i;
+    // i = NULL;
+    // delete j;
+    // j = NULL;
 
     return 0;
 }
