@@ -2,11 +2,11 @@
 using namespace std;
 
 struct IntNode{
-    // insert code below
-    int nodeData;
-    IntNode *linkage;
+    // Data of the IntNode
+    int nodeData;           // int
+    IntNode *linkage;       // linkage: The next IntNode
 
-    // constructor
+    // Constructor method
     IntNode(int nodeData, IntNode* linkage){
         this->nodeData = nodeData;
         this->linkage = linkage;
@@ -66,11 +66,15 @@ struct IntList{
 
     // deletes node
     void deleteNode(IntNode* head) {
-        IntNode *prev = this->head;     
-        while (prev->linkage != head){
-            prev = prev->linkage;
+        if (head = this->head){
+            this->head = this->head->linkage;
+        }else{
+            IntNode *prev = this->head;
+            while (prev->linkage != head){
+                prev = prev->linkage;
+            }
+            prev->linkage = head->linkage;
         }
-        prev->linkage = head->linkage;
         delete head;
         head = NULL;
     }
