@@ -81,8 +81,10 @@ struct IntList{
 
     // deletes node AND all children nodes
     void deleteAllNextNodes(IntNode* head){
-        IntNode *next = head->linkage;          // Create pointer
-        deleteAllNextNodes(next);               // Recursive function call to delete all next nodes
+        IntNode *next = head->linkage;          // Create pointer pointing to linkage (next node)
+        if (next != NULL){
+            deleteAllNextNodes(next);           // Recursive function call to delete all next nodes
+        }
         delete head;                            // Deallocate memory
         head = NULL;                            // Set pointer to null
     }
