@@ -27,13 +27,13 @@ struct IntList{
 
         // Edge case check: IntNode passed is null
         if (existingNode == NULL){                   // If the IntNode being passed is null:
-            cout << "ERROR: trying to insert an IntNode after a null IntNode";  // Error message
+            cout << "ERROR: trying to insert an IntNode after a null IntNode" << endl;  // Error message
             return NULL;                                                        // Return a NULL
         }
         
         // Edge case check: list is empty (no head)
         if (this->head == NULL){
-            cout << "ERROR: trying to insert in an empty list";                 // Error message
+            cout << "ERROR: trying to insert in an empty list" << endl;                 // Error message
             return NULL;
         }
 
@@ -43,7 +43,7 @@ struct IntList{
             head = head->linkage;                       // Set head to next IntNode
         }
         if (head != existingNode){                      // After the traversal through list, check if head is not the existing node
-            cout << "ERROR: IntNode does not exist in the list";                // Error message: IntNode is not in the list
+            cout << "ERROR: IntNode does not exist in the list" << endl;                // Error message: IntNode is not in the list
             return NULL;                             // return null pointer
         }
 
@@ -62,7 +62,7 @@ struct IntList{
         }
 
         // If list is empty (head is null)
-        cout << "ERROR: attempting to return head in an empty list";
+        cout << "ERROR: attempting to return head in an empty list" << endl;
         return NULL;
     }
 
@@ -71,7 +71,7 @@ struct IntList{
         // Check if list is empty (head is not null)
         IntNode *tail = this->head;                     // Tail initially set to head
         if(tail == NULL){                               // If tail is null:
-            cout << "ERROR: attempting to return tail in an empty list";        // Error message: empty list
+            cout << "ERROR: attempting to return tail in an empty list" << endl;    // Error message: empty list
         }
         // Traverse to the list until the end
         while (tail->linkage != NULL){                  // While the next node is not null:
@@ -103,7 +103,7 @@ struct IntList{
 
             // Edge case: IntNode passed is not in the list
             if (prev->linkage != head){
-                cout << "ERROR: attempting to delete IntNode that is not in the list";
+                cout << "ERROR: attempting to delete IntNode that is not in the list" << endl;
             
             // If IntNode is in list:
             }else{

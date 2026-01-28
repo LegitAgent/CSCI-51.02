@@ -40,10 +40,17 @@ int main(){
 
     // Pointer implementation of IntList
     IntList *list2 = new IntList;
+    IntNode *head2 = list2->returnHead();
+
     IntNode *x = list2->initializeHead(5);
     IntNode *y = list2->insertNode(x, 300);
     IntNode *z = list2->insertNode(y, 500);
     IntNode *w = list2->insertNode(x, 30);
+
+    IntNode *foo = new IntNode;
+    foo->nodeData = 100;
+    foo->linkage = NULL;
+    IntNode *nah = list2->insertNode(foo, 0);
 
     IntNode *first = list2->returnHead();
 
