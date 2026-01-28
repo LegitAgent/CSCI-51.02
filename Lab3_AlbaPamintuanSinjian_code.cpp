@@ -79,6 +79,7 @@ struct IntList {
             IntNode* temp = head;
             head = head->next;
             delete temp;
+            temp = nullptr;
         }
     }
 };
@@ -101,6 +102,7 @@ struct Stack {
         IntNode* temp = peek;
         peek = peek->next;
         delete temp;
+        temp = nullptr;
         size--;
     }
     int getSize() {
@@ -118,6 +120,7 @@ struct Stack {
             IntNode* temp = peek;
             peek = peek->next;
             delete temp;
+            temp = nullptr;
         }
     }
 };
@@ -146,5 +149,7 @@ int main(){
 
     delete list;
     delete stk;
+    list = nullptr;
+    stk = nullptr;
     return 0;
 }
