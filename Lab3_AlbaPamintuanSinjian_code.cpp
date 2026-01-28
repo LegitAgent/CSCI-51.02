@@ -17,10 +17,26 @@ int main(){
     cout << "The head nodeData is " << dude->nodeData << endl;
     cout << "The head nodeData is " << list.returnHead()->nodeData << endl;
 
-    IntNode *head = list.returnHead();
-    list.deleteNode(head);
+    IntNode *arf = list.insertNode(dude, 10);
+    cout << "The second nodeData is " << arf->nodeData << endl;
 
+    IntNode *bark = list.insertNode(dude, 15);
+    cout << "The now-second nodeData is " << bark->nodeData << endl;
+    cout << "The now-third nodeData is " << bark->linkage->nodeData << endl;
+
+    IntNode *head = list.returnHead();
+    IntNode *tail = list.returnTail();
+    cout << tail->nodeData << endl;
+
+    IntNode *nextNode = list.returnNextNode(head);
+    cout << nextNode->nodeData << endl;
+
+    list.deleteNode(tail);
+    cout << tail->nodeData << endl;
+    list.deleteNode(head);
     cout << head->nodeData << endl;
+    list.deleteNode(bark);
+    cout << bark->nodeData << endl;
 
     // deallocate memory
     delete i;

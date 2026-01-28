@@ -30,23 +30,33 @@ struct IntList{
         return this->head;
     }
 
-
-    IntNode* insertNode(IntNode* head, int data) {
-        IntNode nextnode(data, NULL);
-        IntNode *next;
-        next = &nextnode;
-        // TODO: point the current last node to the new node
-        
-        if(head != NULL){
-        head->linkage = next;
-        }
-
-        return next; // Is this correct?
+    IntNode* insertNode(IntNode* existingNode, int data) {
+        IntNode *newNode = new IntNode(data, NULL);
+        newNode->linkage = existingNode->linkage; // points newNode to the next node, else segmentation fault
+        existingNode->linkage = newNode;
+        return newNode;
     }
 
-
     IntNode* returnHead() {
-        return this->head;
+        if (this->head != NULL){
+            return this->head;
+        }
+        return NULL;
+    }
+
+    IntNode* returnTail() {
+        IntNode *tail = this->head;
+        while (tail->linkage != NULL){
+            tail = tail->linkage;
+        }
+        return tail;
+    }
+
+    IntNode* returnNextNode(IntNode* existingNode) {
+        if (existingNode != NULL){
+            return existingNode->linkage;
+        }
+        return NULL;
     }
 
 
@@ -54,4 +64,8 @@ struct IntList{
         delete deletus;
         deletus = NULL;
     }
+};
+
+struct IntStack{
+
 };
