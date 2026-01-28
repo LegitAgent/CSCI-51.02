@@ -133,7 +133,8 @@ struct IntList{
 
 };
 
-struct Stack {
+
+struct IntStack {
 
     // Variables
     IntNode* peek = NULL;                       // Peek variable (top of the stack)
@@ -182,7 +183,7 @@ struct Stack {
     }
 
     // Destructor method
-    ~Stack() {
+    ~IntStack() {
         // Navigate through entire stack from the top
         while (peek != NULL) {                  // While peek is not null:
             IntNode* temp = peek;               // Set temp variable to peek

@@ -76,7 +76,7 @@ int main(){
 
     // IntStack Demonstration
     // Creation of stack and populating stack
-    Stack* stk = new Stack;         // Create pointer to new stack object
+    IntStack* stk = new IntStack;         // Create pointer to new stack object
     stk->push(23);                  // Push IntNode object with data '23'
     int size = stk->getSize();      // int size variable to hold current size of stack
     int peek = stk->getPeek();      // int peek variable to hold data of current peek
