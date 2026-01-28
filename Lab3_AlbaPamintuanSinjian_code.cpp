@@ -142,7 +142,7 @@ int main(){
     cout << list->size << endl;
 
     // sample usage of stack
-    IntStack* stk = new Stack;
+    IntStack* stk = new IntStack;
     stk->push(23);
     int size = stk->getSize();
     int peek = stk->getPeek();
