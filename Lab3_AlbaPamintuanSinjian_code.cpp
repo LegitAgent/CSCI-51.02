@@ -65,18 +65,27 @@ int main(){
         first = first->linkage;
     }
 
-    cout << list2->returnHead()->nodeData << endl;
-    list2->deleteNode(x);
-    cout << list2->returnHead()->nodeData << endl;
+    // Demonstration: delete head, then output data of new head
+    cout << list2->returnHead()->nodeData << endl;      // old head
+    list2->deleteNode(x);                               // Delete old head
+    cout << list2->returnHead()->nodeData << endl;      // output new head
 
+    // Cosmetic title for output readability
     cout << "" << endl;
     cout << "STACK DEMONSTRATION (with errors)" << endl;
-    Stack* stk = new Stack;
-    stk->push(23);
-    int size = stk->getSize();
-    int peek = stk->getPeek();
-    stk->pop();
-    stk->getPeek();
+
+    // IntStack Demonstration
+    // Creation of stack and populating stack
+    Stack* stk = new Stack;         // Create pointer to new stack object
+    stk->push(23);                  // Push IntNode object with data '23'
+    int size = stk->getSize();      // int size variable to hold current size of stack
+    int peek = stk->getPeek();      // int peek variable to hold data of current peek
+    stk->pop();                     // Pop the stack
+
+    // Error: peeking at empty stack
+    stk->getPeek();         // should return Error statement
+
+    // Output size and peek of stack (before pop)
     cout << size << endl;
     cout << peek << endl;
 
