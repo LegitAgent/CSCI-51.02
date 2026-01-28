@@ -3,19 +3,19 @@ using namespace std;
 
 struct IntNode{
     // Data of the IntNode
-    int nodeData;                                       // int
+    int nodeData;                                       // int data of the IntNode
     IntNode *linkage;                                   // linkage: The next IntNode
 };
 
 
 struct IntList{
     // local variables
-    IntNode *head = NULL;                            // Head is initially a NULL
+    IntNode *head = NULL;                               // Head is initially a NULL
 
     // Create head node (first node)
     IntNode* initializeHead(int data) {
-        if (this->head == NULL){                     // If head is NULL (empty list): 
-            this->head = new IntNode;    // Set head to a new IntNode with nodeData 'data' with no next IntNode (NULL)
+        if (this->head == NULL){                        // If head is NULL (empty list): 
+            this->head = new IntNode;                   // Set head to a new IntNode with nodeData 'data' with no next IntNode (NULL)
             head->nodeData = data;
             head->linkage = NULL;
         }
@@ -26,7 +26,7 @@ struct IntList{
     IntNode* insertNode(IntNode* existingNode, int data) {
 
         // Edge case check: IntNode passed is null
-        if (existingNode == NULL){                   // If the IntNode being passed is null:
+        if (existingNode == NULL){                      // If the IntNode being passed is null:
             cout << "ERROR: trying to insert an IntNode after a null IntNode" << endl;  // Error message
             return NULL;                                                        // Return a NULL
         }
@@ -44,10 +44,10 @@ struct IntList{
         }
         if (head != existingNode){                      // After the traversal through list, check if head is not the existing node
             cout << "ERROR: IntNode does not exist in the list" << endl;                // Error message: IntNode is not in the list
-            return NULL;                             // return null pointer
+            return NULL;                                // return null pointer
         }
 
-        IntNode *newNode = new IntNode;     // Creates new IntNode
+        IntNode *newNode = new IntNode;                 // Creates new IntNode
         newNode->nodeData = data;
         newNode->linkage = existingNode->linkage;       // Points newNode to the next node, else segmentation fault
         existingNode->linkage = newNode;                // Set existingNode's linkage to the newNode (new node comes after existing node)
@@ -110,25 +110,25 @@ struct IntList{
             }else{
                 prev->linkage = head->linkage;          // Set the linkage of previous node to head's linkage ('relink' list deletion)
                 delete head;                            // Delete the node
-                head = NULL;                         // Set the pointer to null
+                head = NULL;                            // Set the pointer to null
             }
         }
     }
 
     // deletes node AND all children nodes
     void deleteAllNextNodes(IntNode* head){
-        IntNode *next = head->linkage;          // Create pointer pointing to linkage (next node)
+        IntNode *next = head->linkage;                  // Create pointer pointing to linkage (next node)
         if (next != NULL){
-            deleteAllNextNodes(next);           // Recursive function call to delete all next nodes
+            deleteAllNextNodes(next);                   // Recursive function call to delete all next nodes
         }
-        delete head;                            // Deallocate memory
-        head = NULL;                            // Set pointer to null
+        delete head;                                    // Deallocate memory
+        head = NULL;                                    // Set pointer to null
     }
 
     // destructor method
     ~IntList(){
-        deleteAllNextNodes(this->head);         // Deletes all nodes in the list
-                                                // Ensures that if list is deleted, so are all nodes
+        deleteAllNextNodes(this->head);                 // Deletes all nodes in the list
+                                                        // Ensures that if list is deleted, so are all nodes
     }
 
 };

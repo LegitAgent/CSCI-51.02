@@ -76,14 +76,14 @@ int main(){
 
     // IntStack Demonstration
     // Creation of stack and populating stack
-    IntStack* stk = new IntStack;         // Create pointer to new stack object
-    stk->push(23);                  // Push IntNode object with data '23'
-    int size = stk->getSize();      // int size variable to hold current size of stack
-    int peek = stk->getPeek();      // int peek variable to hold data of current peek
-    stk->pop();                     // Pop the stack
+    IntStack* stk = new IntStack;           // Create pointer to new stack object
+    stk->push(23);                          // Push IntNode object with data '23'
+    int size = stk->getSize();              // int size variable to hold current size of stack
+    int peek = stk->getPeek();              // int peek variable to hold data of current peek
+    stk->pop();                             // Pop the stack
 
     // Error: peeking at empty stack
-    stk->getPeek();         // should return Error statement
+    stk->getPeek();                         // should return Error statement
 
     // Output size and peek of stack (before pop)
     cout << size << endl;
