@@ -4,53 +4,57 @@ using namespace std;
 
 int main(){
 
-    // creating IntNode object i, setting values
-    // IntNode *i = new IntNode(0, NULL);
-    // IntNode *j = new IntNode(1, NULL);
-    // i->linkage = j;
-
-    // cout << "The nodeData of i is " << i->nodeData << endl;
-    // cout << "The nodeData of j is " << i->linkage->nodeData << endl;
-
+    // Creation of IntList object
     IntList list;
     IntNode *dude = list.initializeHead(5);
+
+    // Finding finding head's data
     cout << "The head nodeData is " << dude->nodeData << endl;
     cout << "The head nodeData is " << list.returnHead()->nodeData << endl;
 
+    // Inserting a node into the list
     IntNode *arf = list.insertNode(dude, 10);
     cout << "The second nodeData is " << arf->nodeData << endl;
 
+    // Inserting a node between dude and arf
     IntNode *bark = list.insertNode(dude, 15);
     cout << "The now-second nodeData is " << bark->nodeData << endl;
     cout << "The now-third nodeData is " << bark->linkage->nodeData << endl;
 
+    // Returning head and tail of list
     IntNode *head = list.returnHead();
     IntNode *tail = list.returnTail();
     cout << tail->nodeData << endl;
 
+    // Demonstrating next node method
     IntNode *nextNode = list.returnNextNode(head);
     cout << nextNode->nodeData << endl;
 
+    // Demonstrating deleteNode method
     list.deleteNode(tail);
     cout << tail->nodeData << endl;
     list.deleteNode(head);
     cout << head->nodeData << endl;
 
-    cout << "" << endl;
+    cout << "" << endl;                         // line space to separate, for output readability
 
     // Pointer implementation of IntList
     IntList *list2 = new IntList;
-    IntNode *head2 = list2->returnHead();
+    // Error: getting head of an empty list
+    IntNode *head2 = list2->returnHead();       // should print an error message
 
+    // Filling list with many nodes
     IntNode *x = list2->initializeHead(5);
     IntNode *y = list2->insertNode(x, 300);
     IntNode *z = list2->insertNode(y, 500);
+    // Demonstration of adding node between two nodes in list
     IntNode *w = list2->insertNode(x, 30);
 
+    // Error: inserting into a node that isn't in the list
     IntNode *foo = new IntNode;
     foo->nodeData = 100;
     foo->linkage = NULL;
-    IntNode *nah = list2->insertNode(foo, 0);
+    IntNode *nah = list2->insertNode(foo, 0);   // should print an error message
 
     IntNode *first = list2->returnHead();
 
@@ -75,12 +79,15 @@ int main(){
     cout << peek << endl;
 
 
-    // Deallocation memory: list and stack pointers
+    // Deallocation memory: IntList, IntStack, and IntNode pointers allocated with 'new' keyword
     delete list2;
     list2 = NULL;
 
     delete stk;
     stk = NULL;
+
+    delete foo;
+    foo = NULL;
 
     // Deallocate memory
     // delete i;
