@@ -151,6 +151,7 @@ int main(){
     cout << size << endl;
     cout << peek << endl;
 
+    // deallocate memory
     delete list;
     delete stk;
     list = nullptr;
