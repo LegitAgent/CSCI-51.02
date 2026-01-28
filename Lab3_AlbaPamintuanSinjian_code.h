@@ -82,10 +82,11 @@ struct IntList{
 
     // Returns node linked to existingNode
     IntNode* returnNextNode(IntNode* existingNode) {
-        // Check if
-        if (existingNode != NULL){
-            return existingNode->linkage;
+        if (existingNode != NULL){                      // If existingNode is not null:
+            return existingNode->linkage;               // Return the node after the existing Node
         }
+        // Edge Case: if IntNode passed as argument is NULL
+        cout << "ERROR: attempting to return next IntNode of a null IntNode" << endl;
         return NULL;
     }
 
