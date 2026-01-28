@@ -148,7 +148,7 @@ struct Stack {
         return;
     }
 
-    // Pop: 
+    // Pop: delete top node and return data of that node
     int pop() {
 
         // Edge case: trying to pop an empty stack
@@ -161,7 +161,7 @@ struct Stack {
         peek = peek->linkage;                   // Set peek to top of peek
         delete temp;                            // Deallocate memory
         temp = NULL;                            // Set temp to NULL
-        size--;                                 // decrement size
+        size--;                                 // Decrement size
 
         return data;                            // Return data (int)
     }
@@ -173,19 +173,21 @@ struct Stack {
 
     // Peek: look at top of the stack
     int getPeek() {
-        if(peek == NULL) {
-            cout << "ERROR: attempting to peek at an empty stack" << endl;
-            return 0;
+        if(peek == NULL) {                      // If node at top of stack is NULL:
+            cout << "ERROR: attempting to peek at an empty stack" << endl;  // ERROR message: peeking at empty stack
+            return 0;                           // return 0;
         }
-        return peek->nodeData;
+        return peek->nodeData;                  // If stack not empty, return data of top of stack
     }
 
-
+    // Destructor method
     ~Stack() {
-        while (peek != NULL) {
-            IntNode* temp = peek;
-            peek = peek->linkage;
-            delete temp;
+        // Navigate through entire stack from the top
+        while (peek != NULL) {                  // While peek is not null:
+            IntNode* temp = peek;               // Set temp variable to peek
+            peek = peek->linkage;               // Set peek to next node
+            delete temp;                        // Deallocate memory at address held in temp
+            temp = NULL;                        // Set temp to NULL
         }
     }
 };
