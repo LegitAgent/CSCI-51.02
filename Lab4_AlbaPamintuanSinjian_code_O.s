@@ -6,16 +6,7 @@ _Z5dummyi:
 .LFB0:
 	.cfi_startproc
 	endbr64
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	movl	%edi, -4(%rbp)
-	movl	-4(%rbp), %eax
-	sall	$2, %eax
-	popq	%rbp
-	.cfi_def_cfa 7, 8
+	leal	0(,%rdi,4), %eax
 	ret
 	.cfi_endproc
 .LFE0:
@@ -26,20 +17,8 @@ _Z6dummy2i:
 .LFB1:
 	.cfi_startproc
 	endbr64
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	movl	%edi, -4(%rbp)
-	movl	-4(%rbp), %edx
-	movl	%edx, %eax
-	sall	$2, %eax
-	addl	%edx, %eax
-	sall	$3, %eax
-	addl	%edx, %eax
-	popq	%rbp
-	.cfi_def_cfa 7, 8
+	leal	(%rdi,%rdi,4), %eax
+	leal	(%rdi,%rax,8), %eax
 	ret
 	.cfi_endproc
 .LFE1:
@@ -50,18 +29,9 @@ _Z6dummy3i:
 .LFB2:
 	.cfi_startproc
 	endbr64
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	movl	%edi, -4(%rbp)
-	movl	-4(%rbp), %edx
-	movl	%edx, %eax
+	movl	%edi, %eax
 	sall	$6, %eax
-	subl	%edx, %eax
-	popq	%rbp
-	.cfi_def_cfa 7, 8
+	subl	%edi, %eax
 	ret
 	.cfi_endproc
 .LFE2:
@@ -72,19 +42,8 @@ _Z6dummy4i:
 .LFB3:
 	.cfi_startproc
 	endbr64
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	movl	%edi, -4(%rbp)
-	movl	-4(%rbp), %edx
-	movl	%edx, %eax
-	sall	$2, %eax
-	addl	%edx, %eax
+	leal	(%rdi,%rdi,4), %eax
 	negl	%eax
-	popq	%rbp
-	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
 .LFE3:
@@ -95,16 +54,7 @@ _Z6dummy5i:
 .LFB4:
 	.cfi_startproc
 	endbr64
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	movl	%edi, -4(%rbp)
-	movl	-4(%rbp), %eax
-	imull	$61, %eax, %eax
-	popq	%rbp
-	.cfi_def_cfa 7, 8
+	imull	$61, %edi, %eax
 	ret
 	.cfi_endproc
 .LFE4:
