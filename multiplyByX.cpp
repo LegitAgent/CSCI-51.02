@@ -1,6 +1,11 @@
 #include "IntArray.h"
 
 void multiplyByX(IntArray *p, int x){
-    // multiply x to all elements of array
-    // overwrite the previous elements
+    for (int i = 0; i < p->size; i++) {
+        p->elements[i] = p->elements[i] * x;
+    }
+
+    // Note
+    // This code is not checked for edge cases just for simplicity
+    // in reading the assembly code.
 }
