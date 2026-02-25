@@ -1,8 +1,8 @@
 	.file	"multiplyByX.cpp"
 	.text
-	.globl	_Z11multiplyByXP8IntArrayi
-	.type	_Z11multiplyByXP8IntArrayi, @function
-_Z11multiplyByXP8IntArrayi:
+	.globl	_Z11multiplyByXP8IntArray
+	.type	_Z11multiplyByXP8IntArray, @function
+_Z11multiplyByXP8IntArray:
 .LFB0:
 	.cfi_startproc
 	endbr64
@@ -12,7 +12,6 @@ _Z11multiplyByXP8IntArrayi:
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
 	movq	%rdi, -24(%rbp)
-	movl	%esi, -28(%rbp)
 	movl	$0, -4(%rbp)
 	jmp	.L2
 .L3:
@@ -22,22 +21,20 @@ _Z11multiplyByXP8IntArrayi:
 	movslq	%edx, %rdx
 	salq	$2, %rdx
 	addq	%rdx, %rax
-	movl	(%rax), %eax
-	movq	-24(%rbp), %rdx
-	movq	8(%rdx), %rdx
-	movl	-4(%rbp), %ecx
-	movslq	%ecx, %rcx
-	salq	$2, %rcx
-	addq	%rcx, %rdx
-    ; instead of imull, we use the Russian Peasant method
-    ; clobbered registers: eax (1st collumn), ecx (2nd collumn)...
-    ; edx (modulo holder), ebx (output holder, eventually moved to eax)
-	; imull	-28(%rbp), %eax
-    movl $0, %ebx
-    movl -28(%rbp), %ecx
+	movl	(%rax), %ecx
+	movq	-24(%rbp), %rax
+	movq	8(%rax), %rax
+	movl	-4(%rbp), %edx
+	movslq	%edx, %rdx
+	salq	$2, %rdx
+	addq	%rax, %rdx
+    ; instead of imull, we use the russian peasant algorithm
+    ; registers: ecx (1st collumn), ebx (2st collumn)...
+    ; edx (modulo holder), eax (output)
+	; imull	$61, %ecx, %eax
+    movl    $61, %ebx
 .LOOP:
-    ; insert code here
-    ; end of loop
+    
 	movl	%eax, (%rdx)
 	addl	$1, -4(%rbp)
 .L2:
@@ -52,7 +49,7 @@ _Z11multiplyByXP8IntArrayi:
 	ret
 	.cfi_endproc
 .LFE0:
-	.size	_Z11multiplyByXP8IntArrayi, .-_Z11multiplyByXP8IntArrayi
+	.size	_Z11multiplyByXP8IntArray, .-_Z11multiplyByXP8IntArray
 	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"
