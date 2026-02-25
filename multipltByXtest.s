@@ -29,14 +29,14 @@ _Z11multiplyByXP8IntArray:
 	salq	$2, %rdx
 	addq	%rax, %rdx
     ; instead of imull, we use the russian peasant algorithm
-    ; registers: eax (1st collumn), ebx (2st collumn)...
-    ; edx (modulo holder), ebx (sum of numbers, eventual output)
+    ; registers: ecx (1st collumn), ebx (2sd collumn)...
+    ; edx (even/odd holder), eax (sum of numbers, output)
 	; imull	$61, %ecx, %eax
-    movl    $61, %eax
+    movl    $61, %ebx
     movl    $0, %eax
 .LOOP:
-    ; first, we check if ebx is odd or even
-
+    ; first, we check if eax is odd or even
+    idivl
 	movl	%eax, (%rdx)
 	addl	$1, -4(%rbp)
 .L2:
