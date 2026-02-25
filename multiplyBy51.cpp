@@ -3,7 +3,7 @@
 void multiplyBy51(IntArray *p){
     for (int i = 0; i < p->size; i++) {
         int x = 0;
-        int y = 61;
+        int y = -61;
         int z = p->elements[i];
         while(y != 0){
             if(y & 1 != 0){

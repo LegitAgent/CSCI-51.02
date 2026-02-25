@@ -6,54 +6,43 @@ _Z12multiplyBy61P8IntArray:
 .LFB0:
 	.cfi_startproc
 	endbr64
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	movq	%rdi, -24(%rbp)
-	movl	$0, -4(%rbp)
-	jmp	.L2
+	cmpl	$0, (%rdi)
+	jle	.L1
+	movl	$0, %eax
 .L3:
-	movq	-24(%rbp), %rax
-	movq	8(%rax), %rax
-	movl	-4(%rbp), %edx
-	movslq	%edx, %rdx
-	salq	$2, %rdx
-	addq	%rdx, %rax
-	movl	(%rax), %ecx
-	movq	-24(%rbp), %rax
-	movq	8(%rax), %rax
-	movl	-4(%rbp), %edx
-	movslq	%edx, %rdx
-	salq	$2, %rdx
-	addq	%rax, %rdx
-	movl    $61, %ebx
-    movl    $0, %eax
+	movq	8(%rdi), %rdx
+	leaq	(%rdx,%rax,4), %rdx
+	# instead of imul, russian peasant algorithm!
+	# imull	$61, (%rdx), %ecx
+	# registers used: r8d, r9d, r10, ecx
+	# r8d holds the 'left collumn'
+	# r9d holds the 'right collumn'
+	# note: (%rdx) holds the value of the int[] element
+	# and here, ecx holds the value of the thingy ig
+	movl 	(%rdx), %r8d
+	movl 	$61, %r9d
+	movl	$0, %ecx
 .LOOP:
-    movl    %ebx, %edx
-    cmpl    $0, %edx
-    je .END
-    andl    $1, %edx
-    cmpl    $0, %edx
-    je .SKIP
-    addl    %ecx, %eax
+	# check if r9d is 0
+	testl	%r9d, %r9d
+	jz .ENDLOOP
+	# check if r8d is even...
+	testl	$1, %r9d
+	# ...and if so, skip addition step
+	jz .SKIP
+	addl 	%r8d, %ecx
 .SKIP:
-    addl	%ecx, %ecx
-    sarl    $1, %ebx
-    jmp .LOOP
-.END:
-	movl	%eax, (%rdx)
-	addl	$1, -4(%rbp)
-.L2:
-	movq	-24(%rbp), %rax
-	movl	(%rax), %eax
-	cmpl	%eax, -4(%rbp)
-	jl	.L3
-	nop
-	nop
-	popq	%rbp
-	.cfi_def_cfa 7, 8
+	# multiply r8d by 2, divide r9d by 2
+	addl 	%r8d, %r8d
+	sarl	$1, %r9d
+	jmp .LOOP
+.ENDLOOP:
+	# imull	$61, (%rdx), %ecx
+	movl	%ecx, (%rdx)
+	addq	$1, %rax
+	cmpl	%eax, (%rdi)
+	jg	.L3
+.L1:
 	ret
 	.cfi_endproc
 .LFE0:
