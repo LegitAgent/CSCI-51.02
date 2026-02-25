@@ -28,29 +28,21 @@ _Z11multiplyByXP8IntArray:
 	movslq	%edx, %rdx
 	salq	$2, %rdx
 	addq	%rax, %rdx
-    ; instead of imull, we use the russian peasant algorithm
-    ; registers: ecx (1st collumn), ebx (2sd collumn)...
-    ; edx (even/odd/zero holder), eax (sum of numbers, output)
     movl    $61, %ebx
     movl    $0, %eax
 .LOOP:
-    ; first, we check if ebx is 0, if so exit loop
     movl    %ebx, %edx
-    cmpl    0, %edx
+    cmpl    $0, %edx
     je .END
-    ; if ebx even, then we skip the add step
     andl    $1, %edx
     cmpl    $0, %edx
     je .SKIP
-    ; eax = ecx + eax
     addl    %ecx, %eax
 .SKIP:
-    ; adjust 1st and 2nd collumn
     sall    $1, %ecx
     sarl    $1, %ebx
-    ; jump back to loop
     jmp .LOOP
-.END:   
+.END:
 	movl	%eax, (%rdx)
 	addl	$1, -4(%rbp)
 .L2:
