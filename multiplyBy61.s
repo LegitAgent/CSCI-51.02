@@ -2,7 +2,7 @@
 	.text
 	.globl	_Z11multiplyBy61P8IntArray
 	.type	_Z11multiplyBy61P8IntArray, @function
-_Z11multiplyByXP8IntArray:
+_Z11multiplyBy61P8IntArray:
 .LFB0:
 	.cfi_startproc
 	endbr64
@@ -57,7 +57,7 @@ _Z11multiplyByXP8IntArray:
 	ret
 	.cfi_endproc
 .LFE0:
-	.size	_Z11multiplyByXP8IntArray, .-_Z11multiplyByXP8IntArray
+	.size	_Z11multiplyBy61P8IntArray, .-_Z11multiplyBy61P8IntArray
 	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"
