@@ -1,26 +1,30 @@
-// THE HARD PART
-// insert code below
 #include <iostream>
+#include <string>
 #include "IntArray.h"
 using namespace std;
 
-void multiplyByXGenerator(int x) {
+int main(int argc, char* argv[]) {
+    if(argc != 2) {
+        cout << "Usage: ./multiplyByX.out <Number>" << endl;
+        return 1;
+    }
+    int x = stoi(argv[1]);
+    if(x <= 0) {
+        cout << "Parameter must be a positive constant." << endl;
+        return 1;
+    }
 
-    /* 
-    NOTICE
-    It might be best that you create a copy of multiplyByX.cpp and rename X to the number you're multiplying.
+    string functionName = "multiplyBy" + to_string(x);
+    int length = functionName.length();
 
-    You do not need to change the function name.
-
-    Modify line 12 of multiplyByXTester.cpp when compiling with the output of this generator.
-    */
+    string zName = "_Z" + to_string(length) + functionName + "P8IntArray";
 
     cout << "   .file   \"multiplyBy" << x << ".cpp\"" << endl;
     cout << "   .text" << endl;
-    cout << "   .globl  _Z11multiplyByXP8IntArray" << endl;
-    cout << "   .type   _Z11multiplyByXP8IntArray, @function" << endl;
+    cout << "   .globl " <<  zName << endl;
+    cout << "   .type "<< zName << ", @function" << endl;
 
-    cout << "_Z11multiplyByXP8IntArray:" << endl;
+    cout << zName << ":" << endl;
 
     cout << ".LFB0:" << endl;
     cout << "   .cfi_startproc" << endl;
@@ -65,7 +69,7 @@ void multiplyByXGenerator(int x) {
     cout << "	.cfi_endproc" << endl;
 
     cout << ".LFE0:" << endl;
-    cout << "   .size   _Z11multiplyByXP8IntArray, .-_Z11multiplyByXP8IntArray" << endl;
+    cout << "   .size   " << zName << ", .-" << zName << endl;
     cout << "   .ident	\"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0\"" << endl;
     cout << "   .section	.note.GNU-stack,\"\",@progbits" << endl;
     cout << "	.section	.note.gnu.property,\"a\"" << endl;
@@ -89,13 +93,5 @@ void multiplyByXGenerator(int x) {
     cout << "	.align 8" << endl;
 
     cout << "4:\n" << endl;
-}
-
-int main() {
-    cout << "Input a factor: ";
-    int factor;
-    cin >> factor;
-    multiplyByXGenerator(factor);
-
     return 0;
 }
