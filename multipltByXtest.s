@@ -1,7 +1,7 @@
-	.file	"multiplyByX.cpp"
+	.file	"multiplyBy61.cpp"
 	.text
-	.globl	_Z11multiplyByXP8IntArray
-	.type	_Z11multiplyByXP8IntArray, @function
+	.globl	_Z11multiplyBy61P8IntArray
+	.type	_Z11multiplyBy61P8IntArray, @function
 _Z11multiplyByXP8IntArray:
 .LFB0:
 	.cfi_startproc
@@ -30,13 +30,27 @@ _Z11multiplyByXP8IntArray:
 	addq	%rax, %rdx
     ; instead of imull, we use the russian peasant algorithm
     ; registers: ecx (1st collumn), ebx (2sd collumn)...
-    ; edx (even/odd holder), eax (sum of numbers, output)
-	; imull	$61, %ecx, %eax
+    ; edx (even/odd/zero holder), eax (sum of numbers, output)
     movl    $61, %ebx
     movl    $0, %eax
 .LOOP:
-    ; first, we check if eax is odd or even
-    idivl
+    ; first, we check if ebx is 0, if so exit loop
+    movl    %ebx, %edx
+    cmpl    0, %edx
+    je .END
+    ; if ebx even, then we skip the add step
+    andl    $1, %edx
+    cmpl    $0, %edx
+    je .SKIP
+    ; eax = ecx + eax
+    addl    %ecx, %eax
+.SKIP:
+    ; adjust 1st and 2nd collumn
+    sall    $1, %ecx
+    sarl    $1, %ebx
+    ; jump back to loop
+    jmp .LOOP
+.END:   
 	movl	%eax, (%rdx)
 	addl	$1, -4(%rbp)
 .L2:
