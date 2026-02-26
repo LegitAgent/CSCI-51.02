@@ -35,19 +35,31 @@ int main(int argc, char* argv[]) {
     cout << ".L3:" << endl;
     cout << "   movq	8(%rdi), %rdx" << endl;
     cout << "	leaq	(%rdx,%rax,4), %rdx" << endl;
+    
+    // Where the 'imull' would be, we have replaced with our function
+    // Implementation of Russian Peasant algirorithm (shift-add multiplication)\
+    // r8d holds the multiplicand, and r9d holds the multiplier,...
+    // ...ecx holds the product
     cout << "	movl 	(%rdx), %r8d" << endl;
     cout << "	movl 	$" << x << ", %r9d" << endl;
     cout << "	movl	$0, %ecx" << endl;
+    // Main 'loop', where multiplicand is doubled...
+    // and multiplier is halved (rounded down)
+    // for halving, we used sarl (shift arithmetic right)
     cout << ".LOOP:" << endl;
+    // if r9d is 0, we end the loop
     cout << "	testl	%r9d, %r9d" << endl;
     cout << "	jz .ENDLOOP" << endl;
+    // if r9d is even, we skip adding to ecx
     cout << "	testl	$1, %r9d" << endl;
     cout << "	jz .SKIP" << endl;
     cout << "	addl 	%r8d, %ecx" << endl;
     cout << ".SKIP:" << endl;
+    // we double r8d and halve r9d
     cout << "	addl 	%r8d, %r8d" << endl;
     cout << "	sarl	$1, %r9d" << endl;
     cout << "	jmp .LOOP" << endl;
+    // end of loop
     cout << ".ENDLOOP:" << endl;
     cout << "	movl	%ecx, (%rdx)" << endl;
     cout << "   addq	$1, %rax" << endl;
