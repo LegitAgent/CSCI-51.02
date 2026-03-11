@@ -4,13 +4,10 @@ username=$(whoami)
 process=$1
 
 if [ "$process" != "" ]; then
-	ps aux > processes.txt
-	grep "$username" processes.txt > procuser.txt
-	grep "$process" procuser.txt > procuserproc.txt
-	grep -v "$0" procuserproc.txt | tr -s " " | cut -d " " -f 2 > procuserproc2.txt
-	cat procuserproc2.txt
-
-	rm procuserproc.txt | rm procuser.txt | rm processes.txt | rm procuserproc2.txt
+	ps aux |
+	grep "$username"  |
+	grep "$process" |
+	grep -vE "ourpgrep.sh|ourpkill.sh|grep|/bin/bash" | tr -s " " | cut -d " " -f 2
 else
 	echo "ourpgrep: no matching criteria specified"
 fi
