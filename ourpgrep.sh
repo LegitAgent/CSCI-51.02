@@ -12,13 +12,14 @@ else
 	echo "ourpgrep: no matching criteria specified"
 fi
 
-# grep -v "$0" here just removes the instance of this script running. This is for bash, since without it,
-# it lists down this script alongside the true instances of bash.
+# grep -vE "ourpgrep.sh|ourpkill.sh|grep|/bin/bash" here just removes external instances that happen to have
+# the process name in it. This shouldn\'t cause problems now that ourpkill doesn\'t rely on files, but it
+# might when comparing pgrep and ourpgrep outputs.
 
-# tr here is used for deletion. In this case, since it has the -s tag, it combines all that are double-spaced
-# into one space.
+# tr here is used for deletion. In this case, since it has the -s tag, it combines all that are
+# double-spaced into one space.
 
-# cut here is for extraction of specific parts. -d is used as a delimiter; in this instance, it\'s the space we tr\'d.
-# -f here indicates the field of each line. So -f 2 means the second field.
+# cut here is for extraction of specific parts. -d is used as a delimiter; in this instance, it\'s the
+# space we tr\'d. -f here indicates the field of each line. So -f 2 means the second field.
 
 # Not yet tested for other test cases.
