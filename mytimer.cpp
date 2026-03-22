@@ -5,6 +5,7 @@
 #include <bits/stdc++.h>
 #include <sys/types.h>
 #include <signal.h>
+#include <sys/wait.h>
 using namespace std;
 
 // Function to get current time as a formatted string
@@ -20,6 +21,8 @@ const string currentDateTime() {
 
 int main() {
     pid_t pid1, pid2;
+    bool pressed_enter = false;
+    pid_t dead_process;
     pid1 = fork();
     if(pid1 == 0) {
         // first child
@@ -34,24 +37,33 @@ int main() {
             // second child
             string str;
             getline(cin, str);
+            pressed_enter = true;
             cout << "”Terminated”" << endl;
         } else {
             // parent process
             int counter = 0;
-            while(true) {
+            while(!pressed_enter) {
+                int status;
+                pid_t dead_process = waitpid(-1, &status, WNOHANG);
+                if(dead_process > 0){
+                    break;
+                }
                 counter++;
                 cout << currentDateTime() << endl;
+                cout << pid1 << endl;
 
                 if(counter % 3 == 0) {
                     cout << "”This program has gone on for far too long. Close the myXclock window or press Enter on this window to exit.”" << endl;
                     counter = 0;
                 }
                 sleep(3);
-
             }
         }
-        kill(pid1, SIGTERM);
-        kill(pid2, SIGTERM);
+        if(dead_process == pid1){
+            kill(pid2, SIGTERM);
+        }else if(dead_process == pid2){
+            kill(pid1, SIGTERM);
+        }
     }
     return 0;
 }
