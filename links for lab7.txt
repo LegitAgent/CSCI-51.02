@@ -4,3 +4,4 @@ https://www.geeksforgeeks.org/cpp/getline-string-c/
 https://stackoverflow.com/questions/13273836/how-to-kill-child-of-fork
 https://stackoverflow.com/questions/12193581/detect-death-of-parent-process
 https://stackoverflow.com/questions/284325/how-to-make-child-process-die-after-parent-exits/17589555#17589555
+https://linux.die.net/man/2/waitpid
