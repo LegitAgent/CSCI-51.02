@@ -37,20 +37,26 @@ int main() {
             // second child
             string str;
             getline(cin, str);
-            pressed_enter = true;
             cout << "”Terminated”" << endl;
         } else {
             // parent process
             int counter = 0;
-            while(!pressed_enter) {
+            while(true) {
                 int status;
                 pid_t dead_process = waitpid(-1, &status, WNOHANG);
+                // checks if any children process ended or killed
                 if(dead_process > 0){
+                    if(dead_process == pid1){
+                        cout << "clock died" << endl;
+                        kill(pid2, SIGTERM);
+                    }else if(dead_process == pid2){
+                        cout << "pressed enter" << endl;
+                        kill(pid1, SIGTERM);
+                    }
                     break;
                 }
                 counter++;
                 cout << currentDateTime() << endl;
-                cout << pid1 << endl;
 
                 if(counter % 3 == 0) {
                     cout << "”This program has gone on for far too long. Close the myXclock window or press Enter on this window to exit.”" << endl;
@@ -58,11 +64,6 @@ int main() {
                 }
                 sleep(3);
             }
-        }
-        if(dead_process == pid1){
-            kill(pid2, SIGTERM);
-        }else if(dead_process == pid2){
-            kill(pid1, SIGTERM);
         }
     }
     return 0;
