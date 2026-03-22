@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <sys/prctl.h>
 using namespace std;
 
 // Function to get current time as a formatted string
@@ -25,15 +26,17 @@ void check_children_termination(pid_t first, pid_t second){
     pid_t dead_process = waitpid(-1, &status, WNOHANG);
     if(dead_process == first){
         kill(second, SIGTERM);
+        exit(0); // added this since parent seemed not to terminate on my end
     }else if(dead_process == second){
         kill(first, SIGTERM);
+        exit(0); // added this since parent seemed not to terminate on my end
     }
 }
 
-bool is_parent_terminated(pid_t parent_pid){
-    pid_t current_parent = getppid();
-    return !(current_parent == parent_pid);
-}
+// bool is_parent_terminated(pid_t parent_pid){
+//     pid_t current_parent = getppid();
+//     return !(current_parent == parent_pid);
+// }
 
 int main() {
     pid_t pid1, pid2, parent_pid;
@@ -45,22 +48,18 @@ int main() {
     pid1 = fork();
     if(pid1 == 0) {
         // first child
+        prctl(PR_SET_PDEATHSIG, SIGTERM);
         const char* path = "/usr/bin/xclock";
         char* argv[] = { (char*)"myXclock", (char*)"-digital", NULL };
         if(execv(path, argv) == -1) {
             cout << "Error" << endl;
         }
-        if(is_parent_terminated(parent_pid)){
-            exit(0);
-        }
     } else {
         pid2 = fork();
         if(pid2 == 0) {
             // second child
+            prctl(PR_SET_PDEATHSIG, SIGTERM);
             string str;
-            if(is_parent_terminated(parent_pid)){
-                exit(0);
-            }
             getline(cin, str);
             cout << "”Terminated”" << endl;
         } else {
