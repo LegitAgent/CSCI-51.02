@@ -3,7 +3,8 @@
 #include <ctime>
 #include <string>
 #include <bits/stdc++.h>
-
+#include <sys/types.h>
+#include <signal.h>
 using namespace std;
 
 // Function to get current time as a formatted string
@@ -49,6 +50,8 @@ int main() {
 
             }
         }
+        kill(pid1, SIGTERM);
+        kill(pid2, SIGTERM);
     }
     return 0;
 }
