@@ -19,10 +19,29 @@ const string currentDateTime() {
     return buffer;
 }
 
+
+void check_children_termination(pid_t first, pid_t second){
+    int status;
+    pid_t dead_process = waitpid(-1, &status, WNOHANG);
+    if(dead_process == first){
+        kill(second, SIGTERM);
+    }else if(dead_process == second){
+        kill(first, SIGTERM);
+    }
+}
+
+bool is_parent_terminated(pid_t parent_pid){
+    pid_t current_parent = getppid();
+    return !(current_parent == parent_pid);
+}
+
 int main() {
-    pid_t pid1, pid2;
+    pid_t pid1, pid2, parent_pid;
     bool pressed_enter = false;
     pid_t dead_process;
+
+    parent_pid = getpid();
+
     pid1 = fork();
     if(pid1 == 0) {
         // first child
@@ -31,30 +50,24 @@ int main() {
         if(execv(path, argv) == -1) {
             cout << "Error" << endl;
         }
+        if(is_parent_terminated(parent_pid)){
+            exit(0);
+        }
     } else {
         pid2 = fork();
         if(pid2 == 0) {
             // second child
             string str;
+            if(is_parent_terminated(parent_pid)){
+                exit(0);
+            }
             getline(cin, str);
             cout << "”Terminated”" << endl;
         } else {
             // parent process
             int counter = 0;
             while(true) {
-                int status;
-                pid_t dead_process = waitpid(-1, &status, WNOHANG);
-                // checks if any children process ended or killed
-                if(dead_process > 0){
-                    if(dead_process == pid1){
-                        cout << "clock died" << endl;
-                        kill(pid2, SIGTERM);
-                    }else if(dead_process == pid2){
-                        cout << "pressed enter" << endl;
-                        kill(pid1, SIGTERM);
-                    }
-                    break;
-                }
+                check_children_termination(pid1, pid2);
                 counter++;
                 cout << currentDateTime() << endl;
 
