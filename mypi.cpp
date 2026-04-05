@@ -92,8 +92,8 @@ void *threadfunc(void *ptr) {
 
     for (long long trial = 1; trial <= data->trials; trial++) {
         // generate thread safe random numbers
-        long double x = randomInRange(0.0, 1.0);
-        long double y = randomInRange(0.0, 1.0);
+        long double x = randomInRange(-1.0, 1.0);
+        long double y = randomInRange(-1.0, 1.0);
 
         if ((x * x) + (y * y) <= 1.0L) { // in circle
             data->insideCircle++;
