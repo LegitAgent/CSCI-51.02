@@ -109,6 +109,6 @@ void *threadfunc(void *ptr) {
         }
     }
 
-    pthread_exit((void *) p); // Exit the thread with a return value (the point itself)
+    pthread_exit((void *) data); // Exit the thread with a return value (the point itself)
     return nullptr;
 }
