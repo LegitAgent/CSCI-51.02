@@ -18,15 +18,27 @@ the start of the video and replay it from the beginning, in an infinite loop.
 #include <sys/ipc.h>
 #include <sys/sem.h>
 #include <sys/shm.h>
-#include <iostream>
 
 #include <stdio.h>
+#include <signal.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
 
+#include <iostream>
 #include <fstream>
 
+bool running = true;
+
+void* handle_exit(void* arg) {
+    std::cin.get();
+    running = false;
+    return nullptr;
+}
+
 int main(int argc, char* argv[]) {
+    pthread_t prod_id;
 
     // checks if producer does have the ascii file and the framerate.
     if (argc != 3) {
@@ -36,13 +48,15 @@ int main(int argc, char* argv[]) {
 
     // stores the filename and the framerate.
     std::string videofile = argv[1];
-    if (std::__cxx11::stoi(argv[2]) > 0) int framerate = std::__cxx11::stoi(argv[2]);
+    int framerate;
+    if (std::__cxx11::stoi(argv[2]) > 0) framerate = std::__cxx11::stoi(argv[2]);
     else {
         std::cerr << "A negative or zero framerate cannot be entered.\n"
         << "Syntax: " << argv[0] << " <filename> <framerate that is positive>" << std::endl;
         
         return 1;
     }
+    int framespeed = 1000 / framerate;
 
     // opens the video file.
     std::ifstream file(videofile);
@@ -56,28 +70,90 @@ int main(int argc, char* argv[]) {
         std::cout << "File " << videofile << " acquired." << std::endl;
     }
 
-    // the following code is the printing of each frame. however, this only is a simple loop.
-    // this means that it ends if the loop reads the end of the file.
-    // also, it does not honour framerates yet, so it will be done very quickly.
-    // this has the side effect of freezing the terminal for a few seconds.
-    // if the terminal stays frozen for quite some time (~2 mins), restart the terminal.
-
-    // this will store each line in the frame
-    std::string clearline;
-
-    while (std::getline(file, clearline)) {
-        // if the line has the ascii ESC c, which in case is x1b and c
-        if (!clearline.empty() && clearline[0] == '\x1b' && clearline[1] == 'c') {
-            // this line will clear the screen
-            std::cout << '\x1b' << 'c';
-            // then this line will print out the rest of the line
-            std::cout << clearline.substr(2) << std::endl;
-        } else {
-            // if there is no ascii ESC c, just print out the line as is
-            std::cout << clearline << std::endl;
-        }
+    if (pthread_create(&prod_id, nullptr, handle_exit, nullptr) != 0) {
+        std::cerr << "Something wrong happened with the threading. Try again.";
+        return 1;
     }
-    std::cout << "The frame rendering is only a test in producer.\nCut out the code from producer and paste in consumer when ready." << std::endl;
+
+    // establishing shared memory
+
+    key_t shmKey = 1234; // will also be used as semKey
+
+    int shmSize = 1 << 13; // let's see if 8192 bytes is enough
+
+    int shmFlag = IPC_CREAT | 0666; // will also be used as semFlag
+
+    int shmID = shmget(shmKey, shmSize, shmFlag);
+
+    char* shmMem = (char*)shmat(shmID, NULL, 0);
+
+    // establishing semaphore
+
+    int nSems = 1;
+
+    int semID = semget(shmKey, nSems, shmFlag);
+
+    if (semID == -1) {
+        perror("semget");
+        exit(1);
+    }
+
+    int nOps = 2;
+
+    struct sembuf sema[nOps];
+
+    sema[0].sem_num = 0; // Use the first semaphore in the semaphore set
+    sema[0].sem_op = 0; // Wait if semaphore != 0
+    sema[0].sem_flg = SEM_UNDO; // See slides
+
+    sema[1].sem_num = 0; // Use the first semaphore in the semaphore set
+    sema[1].sem_op = 1; // Increment semaphore by 1
+    sema[1].sem_flg = SEM_UNDO | IPC_NOWAIT; // See slides
+
+    int opResult = semop(semID, sema, nOps);
+    if(opResult != -1) {
+        printf( "Successfully incremented semaphore!\n" ); // debug line
+
+        std::string clearline, frame;
+
+        while (running) {
+            frame.clear();
+
+            // TEST THIS OUT WITH AN IMPLEMENTATION OF CONSUMER.
+            // This code might only display one LINE at a time, not one frame.
+            while (std::getline(file, clearline)) {
+                frame += clearline + "\n";
+                if (!clearline.empty() && clearline[0] == '\x1b' && clearline[1] == 'c') break;
+            }
+
+            if (file.eof()) {
+                file.clear();
+                file.seekg(0); // loops back to the beginning
+                continue;
+            }
+
+            strncpy(shmMem, frame.c_str(), shmSize);
+
+            usleep(framespeed * 1000); // controls framespeed display
+        }
+
+        sema[0].sem_num = 0; // Use the first semaphore in the semaphore set
+        sema[0].sem_op = -1; // Decrement semaphore by 1
+        sema[0].sem_flg = SEM_UNDO | IPC_NOWAIT;
+
+        opResult = semop(semID, sema, nOps);
+        if(opResult == -1)
+        {
+            perror("semop (decrement)");
+        }
+        else
+        {
+            printf("Successfully decremented semaphore!\n"); // debug line
+        }
+    } else {
+        perror("semop (increment)");
+    }
+    
     return 0;
 
 }
