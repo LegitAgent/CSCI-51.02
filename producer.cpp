@@ -30,13 +30,19 @@ int main(int argc, char* argv[]) {
 
     // checks if producer does have the ascii file and the framerate.
     if (argc != 3) {
-        std::cerr << "Missing video ASCII file, framerate or both.\nSyntax: " << argv[0] << " <filename> <framerate>" << std::endl;
+        std::cerr << "Missing video ASCII file, framerate or both.\nSyntax: " << argv[0] << " <filename> <framerate that is positive>" << std::endl;
         return 1;
     }
 
     // stores the filename and the framerate.
     std::string videofile = argv[1];
-    int framerate = std::__cxx11::stoi(argv[2]);
+    if (std::__cxx11::stoi(argv[2]) > 0) int framerate = std::__cxx11::stoi(argv[2]);
+    else {
+        std::cerr << "A negative or zero framerate cannot be entered.\n"
+        << "Syntax: " << argv[0] << " <filename> <framerate that is positive>" << std::endl;
+        
+        return 1;
+    }
 
     // opens the video file.
     std::ifstream file(videofile);
@@ -71,7 +77,7 @@ int main(int argc, char* argv[]) {
             std::cout << clearline << std::endl;
         }
     }
-
+    std::cout << "The frame rendering is only a test in producer.\nCut out the code from producer and paste in consumer when ready." << std::endl;
     return 0;
 
 }
