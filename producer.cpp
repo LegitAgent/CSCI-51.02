@@ -133,7 +133,7 @@ int main(int argc, char* argv[]) {
             }
 
             strncpy(shmMem, frame.c_str(), shmSize);
-
+            std::cout << shmMem;
             usleep(framespeed * 1000); // controls framespeed display
         }
 
