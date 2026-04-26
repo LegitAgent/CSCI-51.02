@@ -48,7 +48,13 @@ int main(int argc, char* argv[]) {
     }
 
     int c_framerate = std::stoi(argv[1]);
-    int c_framespeed = 1000/c_framerate;
+    int c_framespeed;
+    if(c_framerate<0){
+        std::cerr << "Cannot have negative framerate.";
+        return 1;
+    }else if(c_framerate >0){
+        c_framespeed = 1000/c_framerate;
+    }
 
     int semId;
     key_t semKey = 1234;
@@ -105,6 +111,15 @@ int main(int argc, char* argv[]) {
 
     while(running){
         int opResult = semop( semId, sema, nOperations );
+
+        if(c_framerate == 0 && current_frame == *shared_current_frame){
+            opResult = semop(semId, &release, 1);
+            if( opResult == -1 )
+            {
+                perror( "semop (decrement)" );
+            }
+            continue;
+        }
         // If we successfully incremented the semaphore,
         // we can now do stuff.
         if( opResult != -1 )
@@ -139,7 +154,9 @@ int main(int argc, char* argv[]) {
         {
             perror( "semop (increment)" );
         }
-        usleep(c_framespeed * 1000); // controls framespeed display
+        if(c_framerate > 0){
+            usleep(c_framespeed * 1000); // controls framespeed display
+        }
     }
     
     return 0;
