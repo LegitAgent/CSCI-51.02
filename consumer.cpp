@@ -96,11 +96,7 @@ int main(int argc, char* argv[]) {
         // we can now do stuff.
         if( opResult != -1 )
         {
-            printf( "Successfully incremented semaphore!\n" );
-            
             // CRITICAL SECTION
-            // TODO: for consumer...
-            // render the frame that is in the shared memory
             if( ((int*)sharedMem) == (int*)-1 )
             {
                 perror( "shmop: shmat failed" );
@@ -118,17 +114,12 @@ int main(int argc, char* argv[]) {
             // Set number of operations to 1
             // Modify the first operation such that it
             // now decrements the semaphore.
-            sema[0].sem_num = 0; // Use the first semaphore in the semaphore set
             sema[0].sem_op = -1; // Decrement semaphore by 1
-            sema[0].sem_flg = SEM_UNDO | IPC_NOWAIT;
-            opResult = semop( semId, sema, nOperations );
+            opResult = semop(semId, sema, 1);
+            sema[0].sem_op = 0; // Wait if semaphore != 0
             if( opResult == -1 )
             {
                 perror( "semop (decrement)" );
-            }
-            else
-            {
-                printf( "Successfully decremented semaphore!\n" );
             }
         }
         else

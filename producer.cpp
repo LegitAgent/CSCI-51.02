@@ -65,9 +65,6 @@ int main(int argc, char* argv[]) {
     if (!file.is_open()) {
         std::cerr << "Could not open file \"" << videofile << "\".\nVerify if the file is there, and try again." << std::endl;
         return 1;
-    } else {
-        // debug code if file does exist.
-        std::cout << "File " << videofile << " acquired." << std::endl;
     }
 
     if (pthread_create(&prod_id, nullptr, handle_exit, nullptr) != 0) {
@@ -97,6 +94,8 @@ int main(int argc, char* argv[]) {
         perror("semget");
         exit(1);
     }
+
+    int thing = semctl(semID, 0, GETVAL);
 
     int nOps = 2;
 
@@ -145,21 +144,12 @@ int main(int argc, char* argv[]) {
 
         int opResult = semop(semID, sema, nOps);
         if(opResult != -1) {
-            printf( "Successfully incremented semaphore!\n" ); // debug line
-
-            // copies the content of frame to shared memory
             strncpy(shmMem, frame.c_str(), shmSize);
-            std::cout << shmMem;
-
-            sema[0].sem_num = 0; // Use the first semaphore in the semaphore set
             sema[0].sem_op = -1; // Decrement semaphore by 1
-            sema[0].sem_flg = SEM_UNDO | IPC_NOWAIT;
-
-            //opResult = semop(semID, sema, nOps);
+            opResult = semop(semID, sema, 1);
+            sema[0].sem_op = 0; // Wait if semaphore != 0
             if(opResult == -1) {
                     perror("semop (decrement)");
-            } else {
-            printf( "Successfully decremented semaphore!\n" ); // debug line
             }
         } else {
             perror("semop (increment)");
