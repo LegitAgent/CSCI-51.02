@@ -47,7 +47,29 @@ int main(int argc, char* argv[]) {
         return 1;
     } else {
         // debug code if file does exist.
-        std::cout << "File acquired." << std::endl;
+        std::cout << "File " << videofile << " acquired." << std::endl;
+    }
+
+    // the following code is the printing of each frame. however, this only is a simple loop.
+    // this means that it ends if the loop reads the end of the file.
+    // also, it does not honour framerates yet, so it will be done very quickly.
+    // this has the side effect of freezing the terminal for a few seconds.
+    // if the terminal stays frozen for quite some time (~2 mins), restart the terminal.
+
+    // this will store each line in the frame
+    std::string clearline;
+
+    while (std::getline(file, clearline)) {
+        // if the line has the ascii ESC c, which in case is x1b and c
+        if (!clearline.empty() && clearline[0] == '\x1b' && clearline[1] == 'c') {
+            // this line will clear the screen
+            std::cout << '\x1b' << 'c';
+            // then this line will print out the rest of the line
+            std::cout << clearline.substr(2) << std::endl;
+        } else {
+            // if there is no ascii ESC c, just print out the line as is
+            std::cout << clearline << std::endl;
+        }
     }
 
     return 0;
