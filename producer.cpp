@@ -110,48 +110,62 @@ int main(int argc, char* argv[]) {
     sema[1].sem_op = 1; // Increment semaphore by 1
     sema[1].sem_flg = SEM_UNDO | IPC_NOWAIT; // See slides
 
-    int opResult = semop(semID, sema, nOps);
-    if(opResult != -1) {
-        printf( "Successfully incremented semaphore!\n" ); // debug line
+    std::string clearline, frame;
 
-        std::string clearline, frame;
+    while (running) {
+        frame.clear();
 
-        while (running) {
-            frame.clear();
+        // TEST THIS OUT WITH AN IMPLEMENTATION OF CONSUMER.
+        // This code might only display one LINE at a time, not one frame.
 
-            // TEST THIS OUT WITH AN IMPLEMENTATION OF CONSUMER.
-            // This code might only display one LINE at a time, not one frame.
-            while (std::getline(file, clearline)) {
-                frame += clearline + "\n";
-                if (!clearline.empty() && clearline[0] == '\x1b' && clearline[1] == 'c') break;
+        // First line of the frame will get printed
+        while (std::getline(file, clearline)) {
+            frame += clearline + "\n";
+            if (!clearline.empty() && clearline[0] == '\x1b' && clearline[1] == 'c') break;
+        }
+
+        // Then the rest of the frame will get printed
+        while (std::getline(file, clearline)) {
+            if (!clearline.empty() && clearline[0] == '\x1b' && clearline[1] == 'c') {
+                // https://www.geeksforgeeks.org/cpp/set-position-with-seekg-in-cpp-language-file-handling/
+                // What this does is it is seeking the lines after the line with the
+                // ASCII ESC c. All the lines without it will then be added to the frame.
+                // When it encounters a line with the ASCII ESC c, it breaks.
+                file.seekg(-(clearline.size() + 1), std::ios_base::cur);
+                break;
             }
+            frame += clearline + "\n";
+        }
 
-            if (file.eof()) {
-                file.clear();
-                file.seekg(0); // loops back to the beginning
-                continue;
-            }
+        if (file.eof()) {
+            file.clear();
+            file.seekg(0); // loops back to the beginning
+            continue;
+        }
 
+        int opResult = semop(semID, sema, nOps);
+        if(opResult != -1) {
+            printf( "Successfully incremented semaphore!\n" ); // debug line
+
+            // copies the content of frame to shared memory
             strncpy(shmMem, frame.c_str(), shmSize);
             std::cout << shmMem;
-            usleep(framespeed * 1000); // controls framespeed display
+
+            sema[0].sem_num = 0; // Use the first semaphore in the semaphore set
+            sema[0].sem_op = -1; // Decrement semaphore by 1
+            sema[0].sem_flg = SEM_UNDO | IPC_NOWAIT;
+
+            //opResult = semop(semID, sema, nOps);
+            if(opResult == -1) {
+                    perror("semop (decrement)");
+            } else {
+            printf( "Successfully decremented semaphore!\n" ); // debug line
+            }
+        } else {
+            perror("semop (increment)");
         }
 
-        sema[0].sem_num = 0; // Use the first semaphore in the semaphore set
-        sema[0].sem_op = -1; // Decrement semaphore by 1
-        sema[0].sem_flg = SEM_UNDO | IPC_NOWAIT;
-
-        opResult = semop(semID, sema, nOps);
-        if(opResult == -1)
-        {
-            perror("semop (decrement)");
-        }
-        else
-        {
-            printf("Successfully decremented semaphore!\n"); // debug line
-        }
-    } else {
-        perror("semop (increment)");
+        usleep(framespeed * 1000); // controls framespeed display
     }
     
     return 0;

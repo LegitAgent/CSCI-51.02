@@ -26,21 +26,36 @@ overboard with the FPS values that you test your program with!
 #include <iostream>
 #include <fstream>
 
-int main(int argc, char* argv[]) {
+bool running = true;
 
+void* handle_exit(void* arg) {
+    std::cin.get();
+    running = false;
+    return nullptr;
+}
+
+int main(int argc, char* argv[]) {
     // get arguments
     if (argc != 2) {
         std::cerr << "Incorrect arguments. \nSyntax: " << argv[0] << "<positive integer framerate>" << std::endl;
     }
 
+    // thread for exiting when pressing enter
+    pthread_t prod_id;
+    if (pthread_create(&prod_id, nullptr, handle_exit, nullptr) != 0) {
+        std::cerr << "Something wrong happened with the threading. Try again.";
+        return 1;
+    }
+
     int c_framerate = std::stoi(argv[1]);
+    int c_framespeed = 1000/c_framerate;
 
     int semId;
     key_t semKey = 1234;
     int semFlag = IPC_CREAT | 0666;
     int nSems = 1;
 
-     semId = semget( semKey, nSems, semFlag );
+    semId = semget( semKey, nSems, semFlag );
     if( semId == -1 )
     {
         perror( "semget" );
@@ -51,7 +66,7 @@ int main(int argc, char* argv[]) {
     // Id for the shared memory
     int shmId;
     key_t shmKey = 1234;
-    int shmSize = 1 << 10;  //1024 bytes
+    int shmSize = 1 << 13;
     int shmFlags = IPC_CREAT | 0666;
     // Pointer for the starting address of the shared memory segment.
     char* sharedMem;
@@ -64,57 +79,64 @@ int main(int argc, char* argv[]) {
     // -- Semaphore Accessing --
     int nOperations = 2;
     struct sembuf sema[nOperations];
+
     sema[0].sem_num = 0; // Use the first semaphore in the semaphore set
     sema[0].sem_op = 0; // Wait if semaphore != 0
     sema[0].sem_flg = SEM_UNDO; // See slides
+
     sema[1].sem_num = 0; // Use the first semaphore in the semaphore set
     sema[1].sem_op = 1; // Increment semaphore by 1
     sema[1].sem_flg = SEM_UNDO | IPC_NOWAIT; // See slides
-    int opResult = semop( semId, sema, nOperations );
-    // If we successfully incremented the semaphore,
-    // we can now do stuff.
-    if( opResult != -1 )
-    {
-        printf( "Successfully incremented semaphore!\n" );
-        
-        // CRITICAL SECTION
-        // TODO: for consumer...
-        // render the frame that is in the shared memory
-        if( ((int*)sharedMem) == (int*)-1 )
+    std::string frame;
+
+
+    while(running){
+        int opResult = semop( semId, sema, nOperations );
+        // If we successfully incremented the semaphore,
+        // we can now do stuff.
+        if( opResult != -1 )
         {
-            perror( "shmop: shmat failed" );
+            printf( "Successfully incremented semaphore!\n" );
+            
+            // CRITICAL SECTION
+            // TODO: for consumer...
+            // render the frame that is in the shared memory
+            if( ((int*)sharedMem) == (int*)-1 )
+            {
+                perror( "shmop: shmat failed" );
+            }
+            else
+            {
+                std::cout << "HI" << std::endl;
+                frame = sharedMem;
+                std::cout << frame;
+                //std::cout << sharedMem;
+            }
+
+
+            // -- Semaphore Releasing --
+            // Set number of operations to 1
+            // Modify the first operation such that it
+            // now decrements the semaphore.
+            sema[0].sem_num = 0; // Use the first semaphore in the semaphore set
+            sema[0].sem_op = -1; // Decrement semaphore by 1
+            sema[0].sem_flg = SEM_UNDO | IPC_NOWAIT;
+            opResult = semop( semId, sema, nOperations );
+            if( opResult == -1 )
+            {
+                perror( "semop (decrement)" );
+            }
+            else
+            {
+                printf( "Successfully decremented semaphore!\n" );
+            }
         }
         else
         {
-            std::cout << "HI" << std::endl;
-            std::string frame;
-            frame = sharedMem;
-            std::cout << frame;
-            //std::cout << sharedMem;
+            perror( "semop (increment)" );
         }
-
-
-        // -- Semaphore Releasing --
-        // Set number of operations to 1
-        nOperations = 1;
-        // Modify the first operation such that it
-        // now decrements the semaphore.
-        sema[0].sem_num = 0; // Use the first semaphore in the semaphore set
-        sema[0].sem_op = -1; // Decrement semaphore by 1
-        sema[0].sem_flg = SEM_UNDO | IPC_NOWAIT;
-        opResult = semop( semId, sema, nOperations );
-        if( opResult == -1 )
-        {
-            perror( "semop (decrement)" );
-        }
-        else
-        {
-            printf( "Successfully decremented semaphore!\n" );
-        }
+        usleep(c_framespeed * 1000); // controls framespeed display
     }
-    else
-    {
-        perror( "semop (increment)" );
-    }
+    
     return 0;
 }
