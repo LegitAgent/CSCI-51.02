@@ -83,8 +83,9 @@ int main(int argc, char* argv[]) {
     // share fps
     int* shared_fps = (int*)shmMem;
     int* shared_current_frame = (int*)(shmMem + sizeof(int));
-    char* shared_frame = shmMem + (sizeof(int) * 2);
-    int frameSize = shmSize - (sizeof(int) * 2);
+    int* shared_total_frames = (int*)(shmMem + sizeof(int) * 2);
+    char* shared_frame = shmMem + (sizeof(int) * 3);
+    int frameSize = shmSize - (sizeof(int) * 3);
     *shared_fps = framerate;
     *shared_current_frame = 0;
 
@@ -120,6 +121,17 @@ int main(int argc, char* argv[]) {
     
     std::string clearline, frame;
     int current_frame = 0;
+    int total_frames = 0;
+
+    std::string countline;
+    while (std::getline(file, countline)) {
+        if (!countline.empty() && countline[0] == '\x1b' && countline[1] == 'c')
+            total_frames++;
+    }
+    *shared_total_frames = total_frames;
+
+    file.clear();
+    file.seekg(0);
 
     while (running) {
         frame.clear();

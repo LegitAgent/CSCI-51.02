@@ -76,8 +76,10 @@ int main(int argc, char* argv[]) {
     sharedMem = (char*)shmat( shmId, NULL, 0 );
     int* shared_fps = (int*)sharedMem;
     int* shared_current_frame = (int*)(sharedMem + sizeof(int));
-    char* shared_frame = sharedMem + (sizeof(int) * 2);
+    int* shared_total_frames = (int*)(sharedMem + sizeof(int) * 2);
+    char* shared_frame = sharedMem + (sizeof(int) * 3);
     int producer_fps = *shared_fps;
+    int total_frames = *shared_total_frames;
 
     // -- Semaphore Accessing --
     int nOperations = 2;
@@ -98,6 +100,8 @@ int main(int argc, char* argv[]) {
 
     std::string frame;
     int current_frame = 0;
+    int last_frame = 0;
+    int frames_skipped = 0;
 
     while(running){
         int opResult = semop( semId, sema, nOperations );
@@ -107,9 +111,17 @@ int main(int argc, char* argv[]) {
         {
             // CRITICAL SECTION
             current_frame = *shared_current_frame;
+            if (last_frame > current_frame) {
+                frames_skipped = 0;
+                last_frame = 0;
+            } 
+            if (current_frame > last_frame) {
+                frames_skipped += (current_frame - last_frame - 1);
+                last_frame = current_frame;
+            }
             frame = shared_frame;
             std::cout << frame;
-            std::cout << "Current frame: " << current_frame << " / 2662 (" << producer_fps - c_framerate << " frames skipped)"  << std::endl;
+            std::cout << "Current frame: " << current_frame << " / " << total_frames << " (" << frames_skipped << " frames skipped)"  << std::endl;
             //std::cout << sharedMem;
 
 
