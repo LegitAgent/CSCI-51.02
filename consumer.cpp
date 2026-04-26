@@ -74,7 +74,10 @@ int main(int argc, char* argv[]) {
     // shmat() returns the starting address of the shared memory
     // segment, so we assign it to sharedMem.
     sharedMem = (char*)shmat( shmId, NULL, 0 );
-
+    int* shared_fps = (int*)sharedMem;
+    int* shared_current_frame = (int*)(sharedMem + sizeof(int));
+    char* shared_frame = sharedMem + (sizeof(int) * 2);
+    int producer_fps = *shared_fps;
 
     // -- Semaphore Accessing --
     int nOperations = 2;
@@ -86,9 +89,15 @@ int main(int argc, char* argv[]) {
 
     sema[1].sem_num = 0; // Use the first semaphore in the semaphore set
     sema[1].sem_op = 1; // Increment semaphore by 1
-    sema[1].sem_flg = SEM_UNDO | IPC_NOWAIT; // See slides
-    std::string frame;
+    sema[1].sem_flg = SEM_UNDO; // See slides
 
+    struct sembuf release;
+    release.sem_num = 0; // Use the first semaphore in the semaphore set
+    release.sem_op = -1; // Decrement semaphore by 1
+    release.sem_flg = SEM_UNDO; // See slides
+
+    std::string frame;
+    int current_frame = 0;
 
     while(running){
         int opResult = semop( semId, sema, nOperations );
@@ -97,26 +106,18 @@ int main(int argc, char* argv[]) {
         if( opResult != -1 )
         {
             // CRITICAL SECTION
-            if( ((int*)sharedMem) == (int*)-1 )
-            {
-                perror( "shmop: shmat failed" );
-            }
-            else
-            {
-                std::cout << "HI" << std::endl;
-                frame = sharedMem;
-                std::cout << frame;
-                //std::cout << sharedMem;
-            }
+            current_frame = *shared_current_frame;
+            frame = shared_frame;
+            std::cout << frame;
+            std::cout << "Current frame: " << current_frame << " / 2662 (" << producer_fps - c_framerate << " frames skipped)"  << std::endl;
+            //std::cout << sharedMem;
 
 
             // -- Semaphore Releasing --
             // Set number of operations to 1
             // Modify the first operation such that it
             // now decrements the semaphore.
-            sema[0].sem_op = -1; // Decrement semaphore by 1
-            opResult = semop(semId, sema, 1);
-            sema[0].sem_op = 0; // Wait if semaphore != 0
+            opResult = semop(semId, &release, 1);
             if( opResult == -1 )
             {
                 perror( "semop (decrement)" );

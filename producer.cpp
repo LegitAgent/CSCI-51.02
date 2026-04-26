@@ -75,14 +75,18 @@ int main(int argc, char* argv[]) {
     // establishing shared memory
 
     key_t shmKey = 1234; // will also be used as semKey
-
     int shmSize = 1 << 13; // let's see if 8192 bytes is enough
-
     int shmFlag = IPC_CREAT | 0666; // will also be used as semFlag
-
     int shmID = shmget(shmKey, shmSize, shmFlag);
+    char* shmMem = (char*)shmat(shmID, NULL, 0); // declare shared mem
 
-    char* shmMem = (char*)shmat(shmID, NULL, 0);
+    // share fps
+    int* shared_fps = (int*)shmMem;
+    int* shared_current_frame = (int*)(shmMem + sizeof(int));
+    char* shared_frame = shmMem + (sizeof(int) * 2);
+    int frameSize = shmSize - (sizeof(int) * 2);
+    *shared_fps = framerate;
+    *shared_current_frame = 0;
 
     // establishing semaphore
 
@@ -107,9 +111,15 @@ int main(int argc, char* argv[]) {
 
     sema[1].sem_num = 0; // Use the first semaphore in the semaphore set
     sema[1].sem_op = 1; // Increment semaphore by 1
-    sema[1].sem_flg = SEM_UNDO | IPC_NOWAIT; // See slides
+    sema[1].sem_flg = SEM_UNDO; // See slides
 
+    struct sembuf release;
+    release.sem_num = 0; // Use the first semaphore in the semaphore set
+    release.sem_op = -1; // Decrement semaphore by 1
+    release.sem_flg = SEM_UNDO; // See slides
+    
     std::string clearline, frame;
+    int current_frame = 0;
 
     while (running) {
         frame.clear();
@@ -139,15 +149,17 @@ int main(int argc, char* argv[]) {
         if (file.eof()) {
             file.clear();
             file.seekg(0); // loops back to the beginning
+            current_frame = 0;
             continue;
         }
 
         int opResult = semop(semID, sema, nOps);
         if(opResult != -1) {
-            strncpy(shmMem, frame.c_str(), shmSize);
-            sema[0].sem_op = -1; // Decrement semaphore by 1
-            opResult = semop(semID, sema, 1);
-            sema[0].sem_op = 0; // Wait if semaphore != 0
+            current_frame++;
+            *shared_current_frame = current_frame;
+            strncpy(shared_frame, frame.c_str(), frameSize);
+            shared_frame[frameSize - 1] = '\0';
+            opResult = semop(semID, &release, 1);
             if(opResult == -1) {
                     perror("semop (decrement)");
             }
