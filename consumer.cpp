@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
     // shared memory stuff
     // Id for the shared memory
     int shmId;
-    key_t shmKey = 2345;
+    key_t shmKey = 1234;
     int shmSize = 1 << 10;  //1024 bytes
     int shmFlags = IPC_CREAT | 0666;
     // Pointer for the starting address of the shared memory segment.
@@ -86,9 +86,11 @@ int main(int argc, char* argv[]) {
         }
         else
         {
-            char frame[100];
-            strcpy( frame, sharedMem );
+            std::cout << "HI" << std::endl;
+            std::string frame;
+            frame = sharedMem;
             std::cout << frame;
+            //std::cout << sharedMem;
         }
 
 
