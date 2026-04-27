@@ -181,6 +181,10 @@ int main(int argc, char* argv[]) {
 
         usleep(framespeed * 1000); // controls framespeed display
     }
+    // source: https://stackoverflow.com/questions/25514599/deallocating-shared-memory-segment#:~:text=Any%20reason%20why%20you're,by%20IPC_STAT%20will%20be%20set.
+    // before producer exits, mark shm for destruction then detach
+    shmctl(shmID, IPC_RMID, NULL);   // set shared memory for destruction
+    shmdt(shmMem);   // detach shared memory segment
     
     return 0;
 
